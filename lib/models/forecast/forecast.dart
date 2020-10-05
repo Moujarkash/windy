@@ -4,6 +4,24 @@ part 'forecast.g.dart';
 
 @JsonSerializable()
 class Forecast {
+  @JsonKey(name: 'cod')
+  String code;
+  @JsonKey(name: 'message')
+  String message;
+  @JsonKey(name: 'list')
+  List<ForecastDetails> details;
+  @JsonKey(name: 'city')
+  City city;
+
+  Forecast({this.code, this.message, this.details, this.city});
+
+  factory Forecast.fromJson(Map<String, dynamic> json) => _$ForecastFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ForecastToJson(this);
+}
+
+@JsonSerializable()
+class ForecastDetails {
   @JsonKey(name: 'dt', fromJson: _getDateFromTimestampString, toJson: _getTimestampStringFromDate)
   DateTime date;
   @JsonKey(name: 'main')
@@ -21,11 +39,11 @@ class Forecast {
   @JsonKey(name: 'dt_txt')
   String dateText;
 
-  Forecast({this.date});
+  ForecastDetails({this.date});
 
-  factory Forecast.fromJson(Map<String, dynamic> json) => _$ForecastFromJson(json);
+  factory ForecastDetails.fromJson(Map<String, dynamic> json) => _$ForecastDetailsFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ForecastToJson(this);
+  Map<String, dynamic> toJson() => _$ForecastDetailsToJson(this);
 
   static DateTime _getDateFromTimestampString(String jsonValue) {
       if (jsonValue == null || jsonValue.isEmpty)
@@ -113,4 +131,36 @@ class Wind {
   factory Wind.fromJson(Map<String, dynamic> json) => _$WindFromJson(json);
 
   Map<String, dynamic> toJson() => _$WindToJson(this);
+}
+
+@JsonSerializable()
+class City {
+  int id;
+  String name;
+  String country;
+  @JsonKey(name: 'coord')
+  Coordinates coordinates;
+  int population;
+  int timezone;
+  int sunrise;
+  int sunset;
+
+  City({this.id, this.name, this.country, this.coordinates, this.population,
+      this.timezone, this.sunrise, this.sunset});
+
+  factory City.fromJson(Map<String, dynamic> json) => _$CityFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CityToJson(this);
+}
+
+@JsonSerializable()
+class Coordinates {
+  double lat;
+  double lon;
+
+  Coordinates({this.lat, this.lon});
+
+  factory Coordinates.fromJson(Map<String, dynamic> json) => _$CoordinatesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CoordinatesToJson(this);
 }

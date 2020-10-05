@@ -8,7 +8,29 @@ part of 'forecast.dart';
 
 Forecast _$ForecastFromJson(Map<String, dynamic> json) {
   return Forecast(
-    date: Forecast._getDateFromTimestampString(json['dt'] as String),
+    code: json['cod'] as String,
+    message: json['message'] as String,
+    details: (json['list'] as List)
+        ?.map((e) => e == null
+            ? null
+            : ForecastDetails.fromJson(e as Map<String, dynamic>))
+        ?.toList(),
+    city: json['city'] == null
+        ? null
+        : City.fromJson(json['city'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$ForecastToJson(Forecast instance) => <String, dynamic>{
+      'cod': instance.code,
+      'message': instance.message,
+      'list': instance.details,
+      'city': instance.city,
+    };
+
+ForecastDetails _$ForecastDetailsFromJson(Map<String, dynamic> json) {
+  return ForecastDetails(
+    date: ForecastDetails._getDateFromTimestampString(json['dt'] as String),
   )
     ..forecastMainInfo = json['main'] == null
         ? null
@@ -28,8 +50,9 @@ Forecast _$ForecastFromJson(Map<String, dynamic> json) {
     ..dateText = json['dt_txt'] as String;
 }
 
-Map<String, dynamic> _$ForecastToJson(Forecast instance) => <String, dynamic>{
-      'dt': Forecast._getTimestampStringFromDate(instance.date),
+Map<String, dynamic> _$ForecastDetailsToJson(ForecastDetails instance) =>
+    <String, dynamic>{
+      'dt': ForecastDetails._getTimestampStringFromDate(instance.date),
       'main': instance.forecastMainInfo,
       'weather': instance.weatherList,
       'clouds': instance.clouds,
@@ -102,4 +125,43 @@ Wind _$WindFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$WindToJson(Wind instance) => <String, dynamic>{
       'speed': instance.speed,
       'deg': instance.deg,
+    };
+
+City _$CityFromJson(Map<String, dynamic> json) {
+  return City(
+    id: json['id'] as int,
+    name: json['name'] as String,
+    country: json['country'] as String,
+    coordinates: json['coord'] == null
+        ? null
+        : Coordinates.fromJson(json['coord'] as Map<String, dynamic>),
+    population: json['population'] as int,
+    timezone: json['timezone'] as int,
+    sunrise: json['sunrise'] as int,
+    sunset: json['sunset'] as int,
+  );
+}
+
+Map<String, dynamic> _$CityToJson(City instance) => <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'country': instance.country,
+      'coord': instance.coordinates,
+      'population': instance.population,
+      'timezone': instance.timezone,
+      'sunrise': instance.sunrise,
+      'sunset': instance.sunset,
+    };
+
+Coordinates _$CoordinatesFromJson(Map<String, dynamic> json) {
+  return Coordinates(
+    lat: (json['lat'] as num)?.toDouble(),
+    lon: (json['lon'] as num)?.toDouble(),
+  );
+}
+
+Map<String, dynamic> _$CoordinatesToJson(Coordinates instance) =>
+    <String, dynamic>{
+      'lat': instance.lat,
+      'lon': instance.lon,
     };
