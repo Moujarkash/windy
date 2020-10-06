@@ -9,7 +9,9 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomeScreen(),
+      routes: {
+        '/': (context) => HomeScreen()
+      },
     );
   }
 }

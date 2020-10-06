@@ -9,7 +9,7 @@ part of 'forecast.dart';
 Forecast _$ForecastFromJson(Map<String, dynamic> json) {
   return Forecast(
     code: json['cod'] as String,
-    message: json['message'] as String,
+    message: json['message'] as int,
     details: (json['list'] as List)
         ?.map((e) => e == null
             ? null
@@ -30,7 +30,7 @@ Map<String, dynamic> _$ForecastToJson(Forecast instance) => <String, dynamic>{
 
 ForecastDetails _$ForecastDetailsFromJson(Map<String, dynamic> json) {
   return ForecastDetails(
-    date: ForecastDetails._getDateFromTimestampString(json['dt'] as String),
+    date: ForecastDetails._getDateFromTimestampString(json['dt'] as int),
   )
     ..forecastMainInfo = json['main'] == null
         ? null

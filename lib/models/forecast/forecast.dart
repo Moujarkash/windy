@@ -7,13 +7,23 @@ class Forecast {
   @JsonKey(name: 'cod')
   String code;
   @JsonKey(name: 'message')
-  String message;
+  int message;
   @JsonKey(name: 'list')
   List<ForecastDetails> details;
   @JsonKey(name: 'city')
   City city;
+  @JsonKey(ignore: true)
+  int error;
 
   Forecast({this.code, this.message, this.details, this.city});
+
+  Forecast.withError(int error) {
+    this.code = null;
+    this.message = null;
+    this.details = List<ForecastDetails>();
+    this.city = null;
+    this.error = error;
+  }
 
   factory Forecast.fromJson(Map<String, dynamic> json) => _$ForecastFromJson(json);
 
@@ -45,17 +55,17 @@ class ForecastDetails {
 
   Map<String, dynamic> toJson() => _$ForecastDetailsToJson(this);
 
-  static DateTime _getDateFromTimestampString(String jsonValue) {
-      if (jsonValue == null || jsonValue.isEmpty)
+  static DateTime _getDateFromTimestampString(int jsonValue) {
+      if (jsonValue == null)
         return null;
 
-      return DateTime.fromMillisecondsSinceEpoch(int.parse(jsonValue));
+      return DateTime.fromMillisecondsSinceEpoch(jsonValue);
   }
 
-  static String _getTimestampStringFromDate(DateTime date) {
+  static int _getTimestampStringFromDate(DateTime date) {
     if (date == null)
-      return '';
-    return date.millisecondsSinceEpoch.toString();
+      return -1;
+    return date.millisecondsSinceEpoch;
   }
 }
 
