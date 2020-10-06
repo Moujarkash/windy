@@ -64,7 +64,7 @@ Map<String, dynamic> _$ForecastDetailsToJson(ForecastDetails instance) =>
 
 ForecastMainInfo _$ForecastMainInfoFromJson(Map<String, dynamic> json) {
   return ForecastMainInfo(
-    temp: (json['key'] as num)?.toDouble(),
+    temp: (json['temp'] as num)?.toDouble(),
     feelsLike: (json['feels_like'] as num)?.toDouble(),
     tempMin: (json['temp_min'] as num)?.toDouble(),
     tempMax: (json['temp_max'] as num)?.toDouble(),
@@ -78,7 +78,7 @@ ForecastMainInfo _$ForecastMainInfoFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$ForecastMainInfoToJson(ForecastMainInfo instance) =>
     <String, dynamic>{
-      'key': instance.temp,
+      'temp': instance.temp,
       'feels_like': instance.feelsLike,
       'temp_min': instance.tempMin,
       'temp_max': instance.tempMax,
@@ -94,7 +94,7 @@ Weather _$WeatherFromJson(Map<String, dynamic> json) {
     id: json['id'] as int,
     main: json['main'] as String,
     description: json['description'] as String,
-    icon: json['icon'] as String,
+    icon: Weather._getIconUrl(json['icon'] as String),
   );
 }
 
@@ -117,7 +117,7 @@ Map<String, dynamic> _$CloudsToJson(Clouds instance) => <String, dynamic>{
 
 Wind _$WindFromJson(Map<String, dynamic> json) {
   return Wind(
-    speed: (json['speed'] as num)?.toDouble(),
+    speed: Wind._convertSpeedToKmPerHour(json['speed']),
     deg: json['deg'] as int,
   );
 }

@@ -17,10 +17,15 @@ class _WeatherRestClient implements WeatherRestClient {
   String baseUrl;
 
   @override
-  fetchForecast({regionId, appId = OPEN_WEATHER_API_KEY}) async {
+  fetchForecast(
+      {regionId, appId = OPEN_WEATHER_API_KEY, units = METRIC_UNITS}) async {
     ArgumentError.checkNotNull(regionId, 'regionId');
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'id': regionId, r'appid': appId};
+    final queryParameters = <String, dynamic>{
+      r'id': regionId,
+      r'appid': appId,
+      r'units': units
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
     final Response<Map<String, dynamic>> _result = await _dio.request(

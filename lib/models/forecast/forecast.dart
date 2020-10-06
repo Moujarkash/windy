@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:collection/collection.dart';
 
 part 'forecast.g.dart';
 
@@ -28,6 +30,13 @@ class Forecast {
   factory Forecast.fromJson(Map<String, dynamic> json) => _$ForecastFromJson(json);
 
   Map<String, dynamic> toJson() => _$ForecastToJson(this);
+
+  Map<DateTime, List<ForecastDetails>> groupDetailsByDay() {
+    if (details == null || details.isEmpty)
+      return null;
+
+    return groupBy(details, (ForecastDetails element) => DateTime(element.date.year, element.date.month, element.date.day));
+  }
 }
 
 @JsonSerializable()
@@ -59,19 +68,19 @@ class ForecastDetails {
       if (jsonValue == null)
         return null;
 
-      return DateTime.fromMillisecondsSinceEpoch(jsonValue);
+      return DateTime.fromMillisecondsSinceEpoch(jsonValue * 1000, isUtc: true);
   }
 
   static int _getTimestampStringFromDate(DateTime date) {
     if (date == null)
       return -1;
-    return date.millisecondsSinceEpoch;
+    return date.toUtc().millisecondsSinceEpoch ~/ 1000;
   }
 }
 
 @JsonSerializable()
 class ForecastMainInfo {
-  @JsonKey(name: 'key')
+  @JsonKey(name: 'temp')
   double temp;
   @JsonKey(name: 'feels_like')
   double feelsLike;
@@ -111,6 +120,7 @@ class Weather {
   int id;
   String main;
   String description;
+  @JsonKey(fromJson: _getIconUrl)
   String icon;
 
   Weather({this.id, this.main, this.description, this.icon});
@@ -118,6 +128,51 @@ class Weather {
   factory Weather.fromJson(Map<String, dynamic> json) => _$WeatherFromJson(json);
 
   Map<String, dynamic> toJson() => _$WeatherToJson(this);
+
+  static String _getIconUrl(String jsonValue) {
+    if (jsonValue == null || jsonValue.isEmpty)
+      return null;
+
+    jsonValue = jsonValue.replaceAll('n', 'd');
+
+    return 'http://openweathermap.org/img/wn/$jsonValue@2x.png';
+  }
+
+  Color getWeatherColor() {
+    switch(main) {
+      case 'Rain':
+      case 'Drizzle':
+        return Colors.teal;
+      case 'Clear':
+        return Colors.orange;
+      case 'Clouds':
+        return Colors.lightGreen;
+      case 'Snow':
+        return Colors.blueGrey;
+      case 'Thunderstorm':
+        return Colors.yellow;
+      default:
+        return Colors.teal;
+    }
+  }
+
+  String getWeatherImageName() {
+    switch(main) {
+      case 'Rain':
+      case 'Drizzle':
+        return 'assets/images/rain.png';
+      case 'Clear':
+        return 'assets/images/sun.png';
+      case 'Clouds':
+        return 'assets/images/clouds.png';
+      case 'Snow':
+        return 'assets/images/snow.png';
+      case 'Thunderstorm':
+        return 'assets/images/lighting.png';
+      default:
+        return 'assets/images/logo.png';
+    }
+  }
 }
 
 @JsonSerializable()
@@ -133,6 +188,7 @@ class Clouds {
 
 @JsonSerializable()
 class Wind {
+  @JsonKey(fromJson: _convertSpeedToKmPerHour)
   double speed;
   int deg;
 
@@ -141,6 +197,13 @@ class Wind {
   factory Wind.fromJson(Map<String, dynamic> json) => _$WindFromJson(json);
 
   Map<String, dynamic> toJson() => _$WindToJson(this);
+
+  static double _convertSpeedToKmPerHour(dynamic jsonValue) {
+    if (jsonValue == null)
+      return -1;
+
+    return jsonValue * 3.6;
+  }
 }
 
 @JsonSerializable()

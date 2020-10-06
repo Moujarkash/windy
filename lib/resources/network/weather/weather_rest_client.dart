@@ -6,12 +6,13 @@ import 'package:windy/models/forecast/forecast.dart';
 
 part 'weather_rest_client.g.dart';
 
-@RestApi (baseUrl: "https://api.openweathermap.org/data/2.5" )
+@RestApi(baseUrl: 'https://api.openweathermap.org/data/2.5')
 abstract class WeatherRestClient {
-  factory WeatherRestClient(Dio dio, { String baseUrl}) = _WeatherRestClient;
+  factory WeatherRestClient(Dio dio, {String baseUrl}) = _WeatherRestClient;
 
-  @GET("/forecast")
+  @GET('/forecast')
   Future<Forecast> fetchForecast(
-  {@required @Query("id") String regionId,
-      @Query("appid") String appId = OPEN_WEATHER_API_KEY});
+      {@required @Query("id") String regionId,
+      @Query("appid") String appId = OPEN_WEATHER_API_KEY,
+      @Query("units") String units = METRIC_UNITS});
 }
